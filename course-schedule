@@ -1,0 +1,53 @@
+class Solution {
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        
+         Map<Integer, List<Integer>> adjList =new HashMap<Integer, List<Integer>>();
+        int[] indegree = new int[numCourses];
+        int[] topologicalOrder = new int[numCourses];
+        
+        for (int i =0; i<prerequisites.length; i++){
+            int src= prerequisites[i][1];
+            int dest= prerequisites[i][0];
+            List<Integer> lst = adjList.getOrDefault(src, new ArrayList<Integer>());
+            lst.add(dest);
+            adjList.put(src,lst);
+            
+            indegree[dest]++ ;
+                   
+        }
+        
+        //Queue initialixatin for 0 indegree
+        
+        Queue<Integer> q = new LinkedList<Integer>();
+        for ( int i =0; i<numCourses; i++){
+            if (indegree[i]==0)
+            { q.add(i);            
+            }
+        }
+        
+        //Check queue
+       int i =0;
+        while(!q.isEmpty()){
+            int Node= q.remove();
+            topologicalOrder[i]=Node;
+            i++;
+            
+            if(adjList.containsKey(Node)){
+              for (Integer neighbour : adjList.get(Node)){
+                indegree[neighbour]--; //decrease indegree
+              
+                if(indegree[neighbour] ==0){
+                    q.add(neighbour);
+                }        
+             }
+           } 
+        }
+        
+        if(i == numCourses){
+             return true;
+        }else{
+            return false;
+        }
+        
+    }
+}
